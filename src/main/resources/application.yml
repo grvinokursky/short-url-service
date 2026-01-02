@@ -1,0 +1,8 @@
+application:
+  workerForCleaning:
+    periodPerMinutes: 1
+  connectionStrings:
+    yandexClickerBaseAddress: "https://clck.ru"
+  shortUrlSettings:
+    existTimeInHours: 12
+    maxClicks: 5
