@@ -12,12 +12,13 @@ import java.nio.charset.StandardCharsets;
 @EnableConfigurationProperties(ApplicationProperties.class)
 public class ShortUrlApplication {
     public static void main(String[] args) {
-        // Раскомментировать вызов метода, если в консоли кракозябры.
-        setOutEncoding();
+        setEncoding();
+
         new SpringApplicationBuilder(ShortUrlApplication.class).headless(false).run(args);
     }
 
-    private static void setOutEncoding() {
+    private static void setEncoding() {
         System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
+        System.setErr(new PrintStream(System.err, true, StandardCharsets.UTF_8));
     }
 }

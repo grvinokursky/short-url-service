@@ -25,7 +25,7 @@ public class ConsoleApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         while (true) {
-            authorization();
+            startAuthorization();
             startShortUrlService();
         }
     }
@@ -60,9 +60,6 @@ public class ConsoleApplication implements CommandLineRunner {
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println();
-            System.out.println("Введите команду:");
-
             var commandString = sc.nextLine();
             if (commandString.isEmpty()) {
                 System.out.println("Пустая строка не является командой.");
@@ -153,16 +150,13 @@ public class ConsoleApplication implements CommandLineRunner {
         }
     }
 
-    private void authorization() {
+    private void startAuthorization() {
         System.out.println("Выполните авторизацию для входа в сервис генерации коротких URL");
         printAuthorizationHelp();
 
         Scanner sc = new Scanner(System.in);
 
         while (true) {
-            System.out.println();
-            System.out.println("Введите команду:");
-
             var commandString = sc.nextLine();
             if (commandString.isEmpty()) {
                 System.out.println("Пустая строка не является командой.");

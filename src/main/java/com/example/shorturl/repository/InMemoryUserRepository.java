@@ -1,6 +1,5 @@
 package com.example.shorturl.repository;
 
-import com.example.shorturl.exception.DuplicateEntityException;
 import com.example.shorturl.model.UserModel;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +13,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public void create(String username) throws Exception {
         if (storage.stream().anyMatch(u -> u.getName().equalsIgnoreCase(username))) {
-            throw new DuplicateEntityException("Пользователь с указанным логином не существует.");
+            throw new Exception("Пользователь с указанным логином не существует.");
         }
 
         UserModel user = new UserModel();

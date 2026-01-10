@@ -38,7 +38,7 @@ public class InMemoryUrlRepository implements UrlRepository {
 
         for (var e : storage.entrySet()) {
             var u = e.getValue();
-            var expired = Instant.now().isAfter(u.getCreateDate());
+            var expired = now.isAfter(u.getCreateDate().plusSeconds((long) u.getExistTimeInHours() * 60 * 60));
             var exceeded = u.getMaxClickCount() > 0 && u.getClickCount() >= u.getMaxClickCount();
             if (expired || exceeded) {
                 toRemove.add(e.getKey());

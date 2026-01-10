@@ -18,25 +18,19 @@ public class WorkerForCleaningService {
     public WorkerForCleaningService(UrlService urlService, ApplicationProperties props) {
         this.urlService = urlService;
         this.periodPerMinutes = props.getWorkerForCleaning().getPeriodPerMinutes();
-
-        System.out.println("Выход из конструктора воркера для очистки");
     }
 
     @PostConstruct
     public void start() {
-        System.out.println("Запуск воркера для очистки");
-
         scheduler.scheduleWithFixedDelay(this::doWork, 0, periodPerMinutes, TimeUnit.MINUTES);
-
-        System.out.println("Запущен воркер для очистки, период выполнения в минутах: " + periodPerMinutes);
     }
 
     private void doWork() {
+        System.out.println("Запуск воркера");
         try {
-            var now = Instant.now();
-            var removed = urlService.cleanup(now);
+            var removed = urlService.cleanup(Instant.now());
             if (removed > 0) {
-                System.out.println("Очистка: удалено ссылок: " + removed + ".");
+                System.out.printf("Очистка: удалено ссылок: %s.%n", removed);
             }
         } catch (Throwable t) {
             System.out.println("Ошибка при очистке: " + t.getMessage());
@@ -54,6 +48,7 @@ public class WorkerForCleaningService {
             scheduler.shutdownNow();
             Thread.currentThread().interrupt();
         }
+
         System.out.println("Воркер для очистки остановлен.");
     }
 }
