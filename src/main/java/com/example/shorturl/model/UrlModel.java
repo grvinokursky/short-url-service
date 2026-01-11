@@ -13,7 +13,6 @@ public class UrlModel {
     private int existTimeInHours;
     private Instant createDate = Instant.now();
 
-    // getters / setters
     public UUID getId() { return id; }
     public UUID getUserId() { return userId; }
     public void setUserId(UUID u) { this.userId = u; }

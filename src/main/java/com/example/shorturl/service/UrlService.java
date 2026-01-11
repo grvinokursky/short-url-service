@@ -24,7 +24,7 @@ public class UrlService {
         this.defaultExistTimeInHours = applicationProperties.getShortUrlSettings().getExistTimeInHours();
     }
 
-    public UrlModel create(UUID userId, String baseUrl, int maxClicks) {
+    public UrlModel create(UUID userId, String baseUrl, int maxClicks) throws Exception {
         var shortUrl = yandexClickerUrlShorteningService.getShortUrlAsync(baseUrl).join();
 
         UrlModel user = new UrlModel();
@@ -39,7 +39,7 @@ public class UrlService {
         return user;
     }
 
-    public UrlModel create(UUID userId, String baseUrl) {
+    public UrlModel create(UUID userId, String baseUrl) throws Exception {
         var shortUrl = yandexClickerUrlShorteningService.getShortUrlAsync(baseUrl).join();
 
         UrlModel user = new UrlModel();
@@ -65,8 +65,6 @@ public class UrlService {
         }
 
         urlRepository.incrementClickCount(userId, shortUrl);
-
-        cleanup(Instant.now());
     }
 
     public int cleanup(Instant now) {

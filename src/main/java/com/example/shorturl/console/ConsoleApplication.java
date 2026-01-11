@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.awt.*;
 import java.net.URI;
+import java.time.Instant;
 import java.util.*;
 
 @Component
@@ -27,27 +28,6 @@ public class ConsoleApplication implements CommandLineRunner {
         while (true) {
             startAuthorization();
             startShortUrlService();
-        }
-    }
-
-    public void openUrlInBrowser(String url) {
-        try {
-            // Проверяем, поддерживается ли Desktop API
-            if (Desktop.isDesktopSupported()) {
-                Desktop desktop = Desktop.getDesktop();
-
-                if (desktop.isSupported(Desktop.Action.BROWSE)) {
-                    // Открываем ссылку в браузере по умолчанию
-                    desktop.browse(new URI(url));
-                    System.out.println("Открываю ссылку в браузере: " + url);
-                } else {
-                    System.out.println("Действие BROWSE не поддерживается");
-                }
-            } else {
-                System.out.println("Desktop не поддерживается");
-            }
-        } catch (Exception e) {
-            System.out.println("Ошибка при открытии браузера: " + e.getMessage());
         }
     }
 
@@ -97,19 +77,24 @@ public class ConsoleApplication implements CommandLineRunner {
         try {
             Desktop.getDesktop().browse(new URI(shortUrl));
         } catch (Exception e) {
-            System.out.printf("В процессе перехода по короткому URL-адресу произошла ошибка. %s", e.getMessage());
+            System.out.printf("В процессе перехода по короткому URL-адресу произошла ошибка. %s%n", e.getMessage());
             return;
         }
 
         urlService.open(currentUser.getId(), shortUrl);
+
+        var removed = urlService.cleanup(Instant.now());
+        if (removed > 0) {
+            System.out.printf("Очистка: удалено ссылок: %s.%n", removed);
+        }
     }
 
     private void createUrl(String baseUrl) {
         try {
             var shortUrl = urlService.create(currentUser.getId(), baseUrl);
-            System.out.printf("Короткая ссылка была успешно создана - %s", shortUrl.getShortUrl());
+            System.out.printf("Короткая ссылка была успешно создана - %s%n", shortUrl.getShortUrl());
         } catch (Exception e) {
-            System.out.printf("Невалидная команда. %s", e.getMessage());
+            System.out.printf("Невалидная команда. %s%n", e.getMessage());
         }
     }
 
@@ -118,9 +103,9 @@ public class ConsoleApplication implements CommandLineRunner {
             var maxClicks = Integer.parseInt(maxClicksString);
 
             var shortUrl = urlService.create(currentUser.getId(), baseUrl, maxClicks);
-            System.out.printf("Короткая ссылка была успешно создана - %s", shortUrl.getShortUrl());
+            System.out.printf("Короткая ссылка была успешно создана - %s%n", shortUrl.getShortUrl());
         } catch (Exception e) {
-            System.out.printf("Невалидная команда. %s", e.getMessage());
+            System.out.printf("Невалидная команда. %s%n", e.getMessage());
         }
     }
 
@@ -146,12 +131,12 @@ public class ConsoleApplication implements CommandLineRunner {
                         url.getCreateDate().plusSeconds((long) url.getExistTimeInHours() * 60 * 60));
             }
         } catch (Exception e) {
-            System.out.printf("Не удалось получить список URL. %s", e.getMessage());
+            System.out.printf("Не удалось получить список URL. %s%n", e.getMessage());
         }
     }
 
     private void startAuthorization() {
-        System.out.println("Выполните авторизацию для входа в сервис генерации коротких URL");
+        System.out.println("Выполните авторизацию для входа в сервис генерации коротких URL.");
         printAuthorizationHelp();
 
         Scanner sc = new Scanner(System.in);
@@ -194,7 +179,7 @@ public class ConsoleApplication implements CommandLineRunner {
             System.out.println("Авторизация выполнена успешно.");
             return true;
         } catch (Exception e) {
-            System.out.printf("При попытке авторизации произошла ошибка. %s", e.getMessage());
+            System.out.printf("При попытке авторизации произошла ошибка. %s%n", e.getMessage());
             return false;
         }
     }
@@ -204,7 +189,7 @@ public class ConsoleApplication implements CommandLineRunner {
             userService.register(username);
 
             System.out.println("Регистрация выполнена успешно.");
-            System.out.println("Для входа выполните авторизация (команда login)");
+            System.out.println("Для входа выполните авторизацию (команда login)");
 
             return true;
         } catch (Exception e) {
@@ -216,15 +201,15 @@ public class ConsoleApplication implements CommandLineRunner {
 
     private void printAuthorizationHelp() {
         System.out.println("Доступные команды:");
-        System.out.println("register (reg) <username> - Зарегистрировать пользователя");
-        System.out.println("login (l) <username> - Войти как пользователь");
+        System.out.println("register (reg) <username> - Зарегистрировать пользователя.");
+        System.out.println("login (l) <username> - Войти как пользователь.");
     }
 
     private void printShortUrlServiceHelp() {
         System.out.println("Доступные команды:");
-        System.out.println("list - Показать ссылки текущего пользователя");
-        System.out.println("create <baseUrl> - Создать короткую ссылку (опционально -maxClicks <maxClicksValue>)");
-        System.out.println("open <shortUrl> - Открыть короткую ссылку");
-        System.out.println("exit - Выйти из приложения");
+        System.out.println("list - Показать ссылки текущего пользователя.");
+        System.out.println("create <baseUrl> - Создать короткую ссылку (опционально -maxClicks <maxClicksValue>).");
+        System.out.println("open <shortUrl> - Открыть короткую ссылку.");
+        System.out.println("exit - Выйти из приложения.");
     }
 }

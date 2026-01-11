@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface UrlRepository {
     List<UrlModel> findByUser(UUID userId);
     Optional<UrlModel> findByShortUrl(String shortUrl);
-    void save(UrlModel url);
+    void save(UrlModel url) throws Exception;
     int deleteExpiredOrExceeded(Instant now);
     void incrementClickCount(UUID userId, String shortUrl);
 }

@@ -3,6 +3,7 @@ package com.example.shorturl.repository;
 import com.example.shorturl.model.UrlModel;
 import org.springframework.stereotype.Repository;
 
+import java.net.URL;
 import java.time.Instant;
 import java.util.*;
 
@@ -28,7 +29,11 @@ public class InMemoryUrlRepository implements UrlRepository {
     }
 
     @Override
-    public void save(UrlModel url) {
+    public void save(UrlModel url) throws Exception {
+        if (storage.values().stream().anyMatch(u -> Objects.equals(u.getShortUrl(), url.getShortUrl()))) {
+            throw new Exception(String.format("URL для данного адреса уже существует - %s.", url.getShortUrl()));
+        }
+
         storage.put(url.getId(), url);
     }
 

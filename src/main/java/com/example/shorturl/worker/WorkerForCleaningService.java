@@ -26,7 +26,6 @@ public class WorkerForCleaningService {
     }
 
     private void doWork() {
-        System.out.println("Запуск воркера");
         try {
             var removed = urlService.cleanup(Instant.now());
             if (removed > 0) {
