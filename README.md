@@ -70,3 +70,4 @@
 
 ## Демонстрация работы
 
+<img width="2560" height="935" alt="Пример" src="https://github.com/user-attachments/assets/f7098d03-a165-45d5-8458-ea18adc5c473" />
